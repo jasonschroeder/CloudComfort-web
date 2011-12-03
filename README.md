@@ -7,20 +7,20 @@
 - Install ruby
 - Install memcached 1.4+ to localhost
 
-    $ sudo port install memcached
+      $ sudo port install memcached
 
 - Clone from git
 - Install gems
 
-    $ bundle install
+      $ bundle install
 
 - Run the app
 
-    $ rackup
+      $ rackup
 
 - Open browser
 
-    $ open http://localhost:9292/
+      $ open http://localhost:9292/
    
 ## Deploying to Heroku
 - clone the repo
