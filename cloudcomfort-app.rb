@@ -26,7 +26,6 @@ require 'sass'
 require 'erb'
 require 'haml'
 require 'logger'
-require 'yaml'
 
 api_version = '1'
 
@@ -36,15 +35,14 @@ configure do
   enable :logging
 end
 
-appsettings = YAML::load_file "settings.yml"
 
 ## Pusher.com settings (private)
-Pusher.app_id = appsettings["pusher"]["app_id"]
-Pusher.key = appsettings["pusher"]["key"]
-Pusher.secret = appsettings["pusher"]["secret"]
+Pusher.app_id = ENV['PUSHER_APP_ID']
+Pusher.key = ENV['PUSHER_KEY']
+Pusher.secret = ENV['PUSHER_SECRET']
 
-if Pusher.app_id == 'get-your-own'
-  raise StandardError, "Pusher app_id is not defined. Please see 'settings.yml'"
+if !Pusher.app_id
+  raise StandardError, "Pusher app_id is not defined. Please set env variables PUSHER_APP_ID, PUSHER_KEY, and PUSHER_SECRET"
 end
 
 ## Memcached client:
