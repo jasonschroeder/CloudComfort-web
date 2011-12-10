@@ -41,8 +41,8 @@
 
 
 %p
-  - if @temp
-    The temperature of the room is: #{@temp.class}
+  - if @measured_temp
+    The temperature of the room is: #{@measured_temp}
   - else
     The temperature is unknown. Please restart the sensor and point it at #{api_path}
 %p
