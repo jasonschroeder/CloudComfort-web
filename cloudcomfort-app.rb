@@ -95,7 +95,9 @@ end
 
 # From the Arduino:
 post '/api/'+ api_version + '/poll' do
-  logger.info "Request body: #{request.body}"
+  request.body.rewind
+  b = request.body.read
+  logger.info "Request body: #{b}"
   # Temperature, celcius (number)
   temp = params[:tempc].to_i
   logger.info "Receiving temperature report: '#{temp}'"
