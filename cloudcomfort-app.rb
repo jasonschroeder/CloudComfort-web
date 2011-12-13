@@ -103,12 +103,19 @@ post '/api/'+ api_version + '/poll' do
   logger.info "Receiving temperature report: '#{temp}'"
 
   settings.cache.set(:measured_temp, temp)
+  
+
+ vals = { :ac_power     => settings.cache.get(:ac_power),
+           :desired_temp => settings.cache.get(:desired_temp),
+           :fan_speed    => settings.cache.get(:fan_speed)}
+
 #  request.body.rewind # in case someone already read it
   status 200
+  body build_arduino_response(vals)
 end
 
 def build_arduino_response(vals)
-  response = "ac=#{vals[:ac_power]}\r\ntempc=#{vals[:desired_temp]}\r\nfan=#{vals[:fan_speed]}\r\n"
+  response = "ac=#{vals[:ac_power].to_i}\r\ntempc=#{vals[:desired_temp].to_i}\r\nfan=#{vals[:fan_speed].to_i}\r\n"
   logger.info "Arduino response: '#{response}'"
   return response
 end
