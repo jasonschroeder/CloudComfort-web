@@ -62,13 +62,13 @@
   %p
     %strong A/C Power:
     %select{:id => "ac_power", :name => "ac_power"}
-      %option{:value => "on"} On
-      %option{:value => "off"} Off
+      %option{:value => "1"} On
+      %option{:value => "0"} Off
   %p
     .formlabel Fan Speed:
     %select{:id => "fan_speed", :name => "fan_speed"}
-      %option{:value => "low"} Low
-      %option{:value => "medium"} Medium
-      %option{:value => "high"} High
+      %option{:value => "0"} Low
+      %option{:value => "1"} Medium
+      %option{:value => "2"} High
   %p
     %input{:type => "submit", :value => "Make it so!"}
