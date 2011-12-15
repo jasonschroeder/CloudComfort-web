@@ -27,5 +27,4 @@ gem 'logger'
 gem 'sass'
 gem 'sinatra'
 gem 'dalli'
-gem 'pusher'
 # TODO gem 'yaml' ??
