@@ -36,15 +36,6 @@ configure do
 end
 
 
-## Pusher.com settings (private)
-Pusher.app_id = ENV['PUSHER_APP_ID']
-Pusher.key = ENV['PUSHER_KEY']
-Pusher.secret = ENV['PUSHER_SECRET']
-
-if !Pusher.app_id
-  raise StandardError, "Pusher app_id is not defined. Please set env variables PUSHER_APP_ID, PUSHER_KEY, and PUSHER_SECRET"
-end
-
 ## Memcached client:
 set :cache, Dalli::Client.new
 
@@ -71,15 +62,7 @@ post '/queue' do
   logger.info " ac_power = #{vals[:ac_power]}"
   logger.info " desired_temp = #{vals[:desired_temp]}"
   logger.info " fan_speed = #{vals[:fan_speed]}"
-  begin
-    # channel is 'cloudcomfort', event is 'ac'
-    Pusher['cloudcomfort'].trigger!('ac', build_arduino_response(vals))
-  rescue Pusher::Error => e
-    # (Pusher::AuthenticationError, Pusher::HTTPError, or Pusher::Error)
-    # TODO: report this back to the browser/AJAX response.
-    logger.error e
-    status 500 and return
-  end
+ 
   
   # save desired values if Pusher was successful
   # TODO : Arduino should force a HTTP POST when receiving the Pusher notice? to confirm receipt?
@@ -95,16 +78,20 @@ end
 
 # From the Arduino:
 post '/api/'+ api_version + '/poll' do
-#  request.body.rewind
-#  b = request.body.read
-#  logger.info "Request body: #{b}"
+
+
   # Temperature, celcius (number)
   temp = params[:tempc].to_i
   logger.info "Receiving temperature report: '#{temp}'"
 
   settings.cache.set(:measured_temp, temp)
 #  request.body.rewind # in case someone already read it
+  vals = { :ac_power     => settings.cache.get(:ac_power),
+           :desired_temp => settings.cache.get(:desired_temp),
+           :fan_speed    => settings.cache.get(:fan_speed)}
+
   status 200
+  body build_arduino_response(vals)
 end
 
 def build_arduino_response(vals)
