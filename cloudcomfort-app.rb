@@ -56,6 +56,10 @@ get '/stylesheet.css' do
   scss :stylesheet
 end
 
+get '/queue' do
+  redirect to('/')
+end
+
 post '/queue' do
   vals = { :ac_power     => params[:ac_power],
            :desired_temp => params[:desired_temp],
@@ -69,7 +73,7 @@ post '/queue' do
   settings.cache.set(:ac_power, vals[:ac_power])
   settings.cache.set(:desired_temp, vals[:desired_temp])
   settings.cache.set(:fan_speed, vals[:fan_speed])
-  status 200 
+  redirect to('/')
 end
 
 

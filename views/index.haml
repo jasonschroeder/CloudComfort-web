@@ -22,7 +22,9 @@
 -# POSSIBILITY OF SUCH DAMAGE.
 
 - @title = 'CloudComfort'
-- api_path = 'http://host.heroku.com/api/1/poll'
+- api_path = 'http://cloudcomfort.heroku.com/api/1/poll'
+- min_temp = 20
+- max_temp = 40
 !!! 5
 %html
   %head
@@ -33,26 +35,14 @@
     %script{:src => 'http://code.jquery.com/jquery-1.6.4.min.js'}
     %script{:src => 'http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.js'}
     %script{:type => 'text/javascript', :src => 'http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js'}
-    :javascript
-      $(document).ready(function() {
-        $('#new_message').submit(function() {
-          $.post($(this).attr('action'), $(this).serialize(), function(data){
-            /* not used yet: */
-            $('#message').append("<p>" + data + "</p>");
-            $('#new_message').each(function(){ this.reset(); });
-          }, "text");
-          alert("Settings sent to the AC.");
-          return false;
-        });
-      });
       
   %body
     %center
       .app_page{"data-role" => :page, "data-theme" => :b}
-        .app_content{"data-role" => :header, "data-theme" => :b}
+        .app_content{:data => {:role => :header, :theme => :b}}
           #{@title}
 
-        .app_content{"data-role" => :content, "data-theme" => :b}
+        .app_content{:data => {:role => :content, :theme => :b}}
           %p
             - if @measured_temp
               The temperature of the room is: #{@measured_temp}. Last measured at #{@last_temp_update}.
@@ -62,30 +52,37 @@
           %p
             - if @ac_power
               The A/C power is #{@ac_power}.
-            - if @ac_power == 'on'
+            - if @ac_power.to_i == 1
               %p
                 - if @fan_speed
                   The fan speed is #{@fan_speed}.
           %h2 Change the A/C!
           #message
-          %form#new_message{:action => '/queue'}
-            %p
-              %strong Desired Temperature (celsius):
-              %input{:type => "text", :id => "desired_temp", :name => "desired_temp"}
-            %p
-              %strong A/C Power:
-              %select{:id => "ac_power", :name => "ac_power"}
-                %option{:value => "1"} On
-                %option{:value => "0"} Off
-            %p
-              .formlabel Fan Speed:
-              %select{:id => "fan_speed", :name => "fan_speed"}
-                %option{:value => "0"} Low
-                %option{:value => "1"} Medium
-                %option{:value => "2"} High
-                %option{:value => "3"} Auto
+          %form#new_message{:action => '/queue', :method => "post"}
+            %div{:data => {:role => "fieldcontain"}}
+              %label{:for => "desired_temp"}Desired Temperature (celsius):
+              %input#desired_temp{:type => "range", :name => "desired_temp", :value => @desired_temp, :min => min_temp, :max => max_temp}
+            %div{:data => {:role => "fieldcontain"}}
+              %label{:for => "power_slider"}A/C Power:
+              %select#ac_power{:name => "ac_power", :data => {:role => "slider"}}
+                %option{:value => "1", :selected => (@ac_power.to_i == 1)} On
+                %option{:value => "0", :selected => (@ac_power.to_i == 0)} Off
+            %fieldset{:data => {:role => "controlgroup"}}
+              %legend Fan Speed:            
+              %input#fan_choice_0{:type => "radio", :name => "fan_speed", :value => "0", :checked => (@fan_speed.to_i == 0)}
+              %label{:for => "fan_choice_0"}Low
+
+              %input#fan_choice_1{:type => "radio", :name => "fan_speed", :value => "1", :checked => (@fan_speed.to_i == 1)}
+              %label{:for => "fan_choice_1"}Medium
+              
+              %input#fan_choice_2{:type => "radio", :name => "fan_speed", :value => "2", :checked => (@fan_speed.to_i == 2)}
+              %label{:for => "fan_choice_2"}High
+
+              %input#fan_choice_3{:type => "radio", :name => "fan_speed", :value => "3", :checked => (@fan_speed.to_i == 3)}
+              %label{:for => "fan_choice_3"}Auto
+
             %p
               %input{:type => "submit", :value => "Make it so!"}
 
-        .app_footer{"data-role" => :footer, "data-theme" => :b}
-          Powered by Arduino
+        .app_footer{:data => {:role => :footer, :theme => :b}}
+          Powered by Arduino and Salesforce Labs
