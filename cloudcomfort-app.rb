@@ -26,6 +26,7 @@ require 'sass'
 require 'erb'
 require 'haml'
 require 'logger'
+require 'date'
 
 api_version = '1'
 
@@ -45,6 +46,8 @@ get '/' do
   @measured_temp = settings.cache.get(:measured_temp)
   @desired_temp = settings.cache.get(:desired_temp)
   @fan_speed = settings.cache.get(:fan_speed)
+  # a DateTime:
+  @last_temp_update = settings.cache.get(:last_update)
   haml :index
 end
 
@@ -63,13 +66,9 @@ post '/queue' do
   logger.info " desired_temp = #{vals[:desired_temp]}"
   logger.info " fan_speed = #{vals[:fan_speed]}"
  
-  
-  # save desired values if Pusher was successful
-  # TODO : Arduino should force a HTTP POST when receiving the Pusher notice? to confirm receipt?
   settings.cache.set(:ac_power, vals[:ac_power])
   settings.cache.set(:desired_temp, vals[:desired_temp])
   settings.cache.set(:fan_speed, vals[:fan_speed])
-
   status 200 
 end
 
@@ -79,13 +78,13 @@ end
 # From the Arduino:
 post '/api/'+ api_version + '/poll' do
 
-
-  # Temperature, celcius (number)
+  # Temperature, celsius (number)
   temp = params[:tempc].to_i
   logger.info "Receiving temperature report: '#{temp}'"
 
   settings.cache.set(:measured_temp, temp)
-#  request.body.rewind # in case someone already read it
+  settings.cache.set(:last_update, DateTime.now)
+
   vals = { :ac_power     => settings.cache.get(:ac_power),
            :desired_temp => settings.cache.get(:desired_temp),
            :fan_speed    => settings.cache.get(:fan_speed)}
@@ -95,17 +94,8 @@ post '/api/'+ api_version + '/poll' do
 end
 
 def build_arduino_response(vals)
-  response = "ac=#{vals[:ac_power]}\r\ntempc=#{vals[:desired_temp]}\r\nfan=#{vals[:fan_speed]}\r\n"
+  response = "ac=#{vals[:ac_power].to_i}\r\ntempc=#{vals[:desired_temp].to_i}\r\nfan=#{vals[:fan_speed].to_i}\r\n"
   logger.info "Arduino response: '#{response}'"
   return response
 end
 
-# Test at <appname>.heroku.com
-
-# You can see all your app specific information this way.
-# IMPORTANT! This is a very bad thing to do for a production
-# application with sensitive information
-
-# get '/env' do
-# ENV.inspect
-# end
