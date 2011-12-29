@@ -5,6 +5,11 @@
 ## INSTALLING
 
 - Install ruby
+- Install "bundler" gem
+
+      $ sudo ruby install bundler
+
+
 - Install memcached 1.4+ to localhost
 
       $ sudo port install memcached
