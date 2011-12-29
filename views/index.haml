@@ -23,52 +23,55 @@
 
 - @title = 'CloudComfort'
 - api_path = 'http://host.heroku.com/api/1/poll'
-%h1 CloudComfort
+!!! 5
+%html
+  %head
+    %title= @title
+    %meta{"http-equiv"=>"Content-Type", :content=>"text/html; charset=utf-8"}
+    %meta{:name => "viewport", :content => "width=device-width, initial-scale=1"}
+    %link{:rel => 'stylesheet', :href => 'http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.css'}
+    %script{:src => 'http://code.jquery.com/jquery-1.6.4.min.js'}
+    %script{:src => 'http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.js'}
+  %body
+    %center
+      .app_page{"data-role" => :page, "data-theme" => :b}
+        .app_content{"data-role" => :header, "data-theme" => :b}
+          #{@title}
 
-%script{:type => 'text/javascript', :src => 'http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js'}
-:javascript
-  $(document).ready(function() {
-    $('#new_message').submit(function() {
-      $.post($(this).attr('action'), $(this).serialize(), function(data){
-        /* not used yet: */
-        $('#message').append("<p>" + data + "</p>");
+        .app_content{"data-role" => :content, "data-theme" => :b}
+          %p
+            - if @measured_temp
+              The temperature of the room is: #{@measured_temp}
+            - else
+              The temperature is unknown.
+              Please restart the sensor and point it at #{api_path}
+          %p
+            - if @ac_power
+              The A/C power is #{@ac_power}.
+            - if @ac_power == 'on'
+              %p
+                - if @fan_speed
+                  The fan speed is #{@fan_speed}.
+          %h2 Change the A/C!
+          #message
+          %form#new_message{:action => '/queue'}
+            %p
+              %strong Desired Temperature (celsius):
+              %input{:type => "text", :id => "desired_temp", :name => "desired_temp"}
+            %p
+              %strong A/C Power:
+              %select{:id => "ac_power", :name => "ac_power"}
+                %option{:value => "1"} On
+                %option{:value => "0"} Off
+            %p
+              .formlabel Fan Speed:
+              %select{:id => "fan_speed", :name => "fan_speed"}
+                %option{:value => "0"} Low
+                %option{:value => "1"} Medium
+                %option{:value => "2"} High
+                %option{:value => "3"} Auto
+            %p
+              %input{:type => "submit", :value => "Make it so!"}
 
-        $('#new_message').each(function(){ this.reset(); });
-      }, "text");
-      return false;
-    });
-  });
-
-
-%p
-  - if @measured_temp
-    The temperature of the room is: #{@measured_temp}
-  - else
-    The temperature is unknown. Please restart the sensor and point it at #{api_path}
-%p
-  - if @ac_power
-    The A/C power is #{@ac_power}.
-    - if @ac_power == 'on'
-      %p
-      - if @fan_speed
-        The fan speed is #{@fan_speed}.
-
-%h2 Change the A/C!
-#message
-%form#new_message{:action => '/queue'}
-  %p
-    %strong Desired Temperature (celsius):
-    %input{:type => "text", :id => "desired_temp", :name => "desired_temp"}
-  %p
-    %strong A/C Power:
-    %select{:id => "ac_power", :name => "ac_power"}
-      %option{:value => "1"} On
-      %option{:value => "0"} Off
-  %p
-    .formlabel Fan Speed:
-    %select{:id => "fan_speed", :name => "fan_speed"}
-      %option{:value => "0"} Low
-      %option{:value => "1"} Medium
-      %option{:value => "2"} High
-  %p
-    %input{:type => "submit", :value => "Make it so!"}
+        .app_footer{"data-role" => :footer, "data-theme" => :b}
+          Powered by Arduino
