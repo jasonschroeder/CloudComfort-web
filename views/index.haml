@@ -41,7 +41,7 @@
         .app_content{"data-role" => :content, "data-theme" => :b}
           %p
             - if @measured_temp
-              The temperature of the room is: #{@measured_temp}
+              The temperature of the room is: #{@measured_temp}. Last measured at #{@last_temp_update}.
             - else
               The temperature is unknown.
               Please restart the sensor and point it at #{api_path}
