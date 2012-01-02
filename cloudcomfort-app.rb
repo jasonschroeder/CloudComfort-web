@@ -51,11 +51,6 @@ get '/' do
   haml :index
 end
 
-get '/stylesheet.css' do
-  content_type 'text/css', :charset => 'utf-8'
-  scss :stylesheet
-end
-
 get '/queue' do
   redirect to('/')
 end
