@@ -2,7 +2,7 @@
 
 # CloudComfort Technical Writeup #
 
-by [Jason Schroeder](https://github.com/jasonschroeder-sfdc) and [Ashish Mody](https://github.com/ashishmody)
+by [Jason Schroeder](https://github.com/jasonschroeder) and [Ashish Mody](https://github.com/ashishmody)
 
 CloudComfort is an application designed to help a user remotely control the temperature of an Air Conditioning (A/C) system.
 The Arduino is used to connect the A/C to the Internet, receive messages to turn on or off the A/C, measure the temperature of the room, as well as adjust the temperature and fan speed accordingly.
@@ -10,7 +10,7 @@ The Arduino is used to connect the A/C to the Internet, receive messages to turn
 The Ethernet shield connects the Arduino to the Internet and communicates with the CloudComfort web API. The Arduino polls the web application at constant intervals and reports the current temperature of the room.
 
 For a promotional video, please visit [YouTube](http://www.youtube.com/watch?v=j8wE6YweumE)
-
+For source code, please visit [CloudComfort-web](https://github.com/jasonschroeder/CloudComfort-web) and [CloudComfort-Arduino](https://github.com/ashishmody/CloudComfort-Arduino)
 
 ## Web Application ##
 
@@ -57,7 +57,7 @@ The CloudComfort Arduino device powers up and gets an IP address using the Ether
 
 ![Schematic](schematic.png)
 
-The Arduino has a temperature sensor (TMP36) connected to the analog input pin `A0`. The Arduino measures the temperature as a linear voltage from 0.1 V to 2.0 V, representing -40° C to 150° C. This integer is sent to the web application in a HTTP POST. 
+The Arduino has a temperature sensor ([TMP36](http://www.analog.com/en/mems-sensors/digital-temperature-sensors/tmp36/products/product.html)) connected to the analog input pin `A0`. The Arduino measures the temperature as a linear voltage from 0.1 V to 2.0 V, representing -40° C to 150° C. This integer is sent to the web application in a HTTP POST. 
 
 The IR transmitter is connected to the digital output pin `D3` of the Arduino. Whenever the Arduino detects a change in the desired A/C settings, the appropriate IR signals are transmitted from this IR LED. 
 
@@ -69,5 +69,5 @@ During the research phase, IR signals from the A/C's remote were recorded and a 
 Supporting multiple Arduinos connecting to the API.  
 
 ## Contact Us ##
-If you would like more information regarding this project, please reach out to [Jason Schroeder](https://github.com/jasonschroeder-sfdc) and [Ashish Mody](https://github.com/ashishmody)
+If you would like more information regarding this project, please reach out to [Jason Schroeder](https://github.com/jasonschroeder) and [Ashish Mody](https://github.com/ashishmody)
 
