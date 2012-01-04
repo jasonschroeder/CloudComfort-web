@@ -24,7 +24,6 @@
 source :gemcutter
 gem 'haml'
 gem 'logger'
-gem 'sass'
 gem 'sinatra'
 gem 'dalli'
-# TODO gem 'yaml' ??
+gem 'maruku'

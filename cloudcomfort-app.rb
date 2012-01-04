@@ -51,6 +51,10 @@ get '/' do
   haml :index
 end
 
+get '/about' do
+  markdown :technicalwriteup
+end
+
 get '/queue' do
   redirect to('/')
 end
